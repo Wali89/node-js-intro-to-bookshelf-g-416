@@ -16,7 +16,38 @@ const bookshelf = require('bookshelf')(knex);
 
 // This is a good place to start!
 
+const User = bookshelf.Model.extend({
+  tableName: 'users',
+  hasTimestamps: true,
+  posts: function() {
+    return this.hasMany(Posts, 'author');
+  },
+  comments: function() {
+    return this.hasMany(Comments);
+  },
+});
 
+const Posts = bookshelf.Model.extend({
+  tableName: 'posts',
+  hasTimestamps: true,
+  author: function() {
+    return this.belongsTo(User, 'author');
+  },
+  comments: function() {
+    return this.hasMany(Comments);
+  },
+});
+
+const Comments = bookshelf.Model.extend({
+  tableName: 'comments',
+  hasTimestamps: true,
+  user: function() {
+    return this.belongsTo(User);
+  },
+  post: function() {
+    return this.belongsTo(Posts);
+  },
+});
 
 
 // Exports for Server hoisting.
